@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日历</title>
+
+    <style>
+        .container1{
+            width: 350px;
+            height: 530px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3)
+        }
+        .container2{
+            height: 85px;
+            background-color: #f2f2f2;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            border-bottom: 1px solid rgb(200, 192, 192);
+        }
+        #dateDisplay1{
+            padding-top: 20px;
+        }
+        .container3{
+            display: flex;
+            justify-content: space-between;
+        }
+        .container4{
+            display: flex;
+            width: 62px;
+            justify-content: space-between;
+            margin-right: 15px;
+            align-items: center;
+        }
+        #prevMouth,#nextMouth{
+            margin-top: 20px;
+            color: #878787;
+        }
+        .calendar{
+            width: 350px;
+
+        }
+        .calendar th{
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            text-align: center;
+            line-height: 50px;
+        }
+        .calendar td{
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            text-align: center;
+            line-height: 50px;
+        }
+        .calendar td:hover{
+            background-color: rgba(192,192,192,0.8);
+        }
+        #prevButton{
+            display: flex;
+            width: 30px;
+            height: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+        #nextButton{
+            display: flex;
+            width: 30px;
+            height: 30px;
+            justify-content: center;
+            align-items: center;
+            margin-left: 10px;
+        }
+        #prevButton:hover{
+            background-color: rgba(192,192,192,0.8);
+        }
+        #nextButton:hover{
+            background-color: rgba(192,192,192,0.8);
+        }
+        #prevMouth,#nextMouth{
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container1">
+        <div class="container2">
+            <h3 id="dateDisplay1"></h3>
+        </div> 
+        <div class="container3">
+            <h4 id="dateDisplay2"></h4>
+            <div class="container4">
+                <div id="prevButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16" id="prevMouth">
+                        <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                    </svg>
+                </div>
+                <div id="nextButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16" id="nextMouth">
+                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                    </svg>
+                </div>  
+            </div>
+        </div>
+        <div id="calendarContainer">
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th>一</th>
+                        <th>二</th>
+                        <th>三</th>
+                        <th>四</th>
+                        <th>五</th>
+                        <th>六</th>
+                        <th>日</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        //获取标签对象
+        let dateDisplay1 = document.getElementById("dateDisplay1")
+        let dateDisplay2 = document.getElementById("dateDisplay2")
+        let calendarBody = document.getElementById("calendarBody")
+        
+        //获取当前时间
+        let currentDate = new Date()
+
+        let currentYear = 0         //定义当前年份
+        let currentMouth = 0        //定义当前月份
+        let currentDay = 0          //定义当前日期
+        let currentWeek = 0         //定义当前星期几
+        let firstDayOfWeek = 0      //定义当前月份中第一天是星期几
+        let daysInMouth = 0         //定义当前月份的总天数
+
+        const Week = ['日','一','二','三','四','五','六']
+
+        //获取时间日期的函数
+        function getTime(date){
+            currentYear = date.getFullYear()     //获取当前年份
+            currentMouth = date.getMonth() + 1   //获取当前月份
+            currentDay = date.getDate()          //获取当前日期
+            currentWeek = date.getDay()          //获取当前星期几
+            firstDayOfWeek = new Date(currentYear,currentMouth - 1,1).getDay() ? new Date(currentYear,currentMouth - 1,1).getDay() : 7
+        }
+        //获取当前月份总天数的函数
+        function getDaysInMouth(date){
+            currentYear = date.getFullYear()     //获取当前年份
+            currentMouth = date.getMonth() + 1   //获取当前月份
+            let lastDayOfMonth = new Date(currentYear, currentMouth, 0) // 创建下个月的第0天，相当于当前月的最后一天
+            daysInMouth = lastDayOfMonth.getDate()
+        }
+        getDaysInMouth(currentDate)
+        
+        getTime(currentDate)
+        dateText1 = currentMouth + '月' + currentDay + '日，' + '星期' + Week[currentWeek]
+        dateDisplay1.textContent = dateText1
+
+        //显示日期标题功能
+        function titleDate(date){
+            getTime(date)
+            dateText2 = currentYear + '年' + currentMouth + '月'
+            dateDisplay2.textContent = dateText2
+        }
+        titleDate(currentDate)
+        
+        let nowYear = currentYear
+        let nowMouth = currentMouth
+        let nowDay = currentDay
+
+
+        //渲染日历体函数
+        function render(){
+            let html = ''
+            let count = 1
+            outerLoop: for(let i = 0; i < 6; i++){
+                html += '<tr>'
+                innerLoop: for(let j = 0; j < 7; j++){
+                    if(i === 0 && (j < firstDayOfWeek - 1)){ 
+                        html += '<td></td>'
+                    }else if(currentYear === nowYear && currentMouth === nowMouth && count === nowDay){
+                        html += `<td id="todayid">${count}</td>`
+                        count++
+                    }else{
+                        html += `<td>${count}</td>`
+                        count++
+                    }
+                    if(count > daysInMouth){
+                        break outerLoop
+                    }
+                }
+                html += '</tr>'
+            }
+            calendarBody.innerHTML = html
+            let todayItem = document.getElementById("todayid")
+            todayItem.style.setProperty("background-color", "#0067c0")
+            todayItem.style.setProperty("color", "#fff")
+        }
+        //开始时渲染一次
+        render()
+
+        //上月下月按钮实现
+        prevButton = document.getElementById("prevButton")
+        nextButton = document.getElementById("nextButton")
+
+        prevButton.addEventListener("click", function() {
+            //当前月份减少1个月
+            currentDate.setMonth(currentMouth - 2)
+            //重新渲染标题日期
+            titleDate(currentDate)
+            //重新获取日期
+            getTime(currentDate)
+            //重新获取月份总天数
+            getDaysInMouth(currentDate)
+            //重新渲染日历体
+            render()
+        })
+
+        nextButton.addEventListener("click", function() {
+            //当前月份增加1个月
+            currentDate.setMonth(currentMouth)
+            //重新渲染标题日期
+            titleDate(currentDate)
+            //重新获取日期
+            getTime(currentDate)
+            //重新获取月份总天数
+            getDaysInMouth(currentDate)
+            //重新渲染日历体
+            render()
+        })
+
+        const calendarContainer = document.getElementById("calendarContainer")
+
+        calendarContainer.addEventListener("wheel", function(event) {
+            // 在此处理滚轮事件
+            const deltaY = event.deltaY; // 获取滚轮滚动的垂直偏移量
+            // 根据 deltaY 的正负值来判断滚轮是向上滚动还是向下滚动，然后相应地更新日历内容
+            if (deltaY < 0) {
+                // 向上滚动，显示上一个月或周
+                // 更新日历的显示内容
+                //当前月份减少1个月
+                currentDate.setMonth(currentMouth - 2)
+                //重新渲染标题日期
+                titleDate(currentDate)
+                //重新获取日期
+                getTime(currentDate)
+                //重新获取月份总天数
+                getDaysInMouth(currentDate)
+                //重新渲染日历体
+                render()
+            } else {
+                // 向下滚动，显示下一个月或周
+                // 更新日历的显示内容
+                //当前月份增加1个月
+                currentDate.setMonth(currentMouth)
+                //重新渲染标题日期
+                titleDate(currentDate)
+                //重新获取日期
+                getTime(currentDate)
+                //重新获取月份总天数
+                getDaysInMouth(currentDate)
+                //重新渲染日历体
+                render()
+            }
+            // 阻止默认滚动行为，以防止页面滚动
+            event.preventDefault();
+        })
+    </script>
+</body>
+</html>
